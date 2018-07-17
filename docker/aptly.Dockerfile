@@ -9,6 +9,7 @@ RUN apt-get -q update                     \
                           bzip2           \
                           gnupg1          \
                           gpgv            \
+                          gpgv1           \
                           graphviz        \
                           wget            \
                           xz-utils        \
