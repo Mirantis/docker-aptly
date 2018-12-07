@@ -8,10 +8,6 @@ This repository contains Docker images for Aptly components and tools.
 
   - Container with aptly tooling
 
-- aptly-api
-
-  - Container running ``aptly api serve``
-
 - aptly-public
 
   - Container running nginx and serving aptly's public directory
@@ -19,7 +15,7 @@ This repository contains Docker images for Aptly components and tools.
 - aptly-publisher
 
   - Container with ``aptly-publisher`` tool for management of Aptly publishes,
-    requires running aptly-api
+    requires running aptly image with API service
 
 aptly-api
 =========
@@ -42,13 +38,14 @@ Run aptly API:
 
 .. code-block:: bash
 
-    docker run -v /srv/aptly:/var/lib/aptly mirantis/aptly-api
+    docker run -v /srv/aptly:/var/lib/aptly mirantis/aptly aptly api serve -no-lock
 
 Run aptly action, eg. list repos:
 
 .. code-block:: bash
 
-    docker run -it -v /srv/aptly:/var/lib/aptly mirantis/aptly-api aptly repo list
+    docker exec -it mirantis/aptly aptly repo list
+
 
 aptly-public
 ============

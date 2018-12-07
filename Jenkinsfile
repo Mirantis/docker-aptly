@@ -17,7 +17,7 @@ node("docker") {
   def workspace = common.getWorkspace()
   def imageTagsList = IMAGE_TAGS.tokenize(" ")
   try{
-    def aptly, aptlyApi, aptlyPublisher, aptlyPublic
+    def aptly, aptlyPublisher, aptlyPublic
     docker.withRegistry(REGISTRY_URL, REGISTRY_CREDENTIALS_ID) {
       stage("checkout") {
          gerrit.gerritPatchsetCheckout(IMAGE_GIT_URL, "", IMAGE_BRANCH, IMAGE_CREDENTIALS_ID)
@@ -27,12 +27,6 @@ node("docker") {
         aptly = dockerLib.buildDockerImage("mirantis/aptly", "", "docker/aptly.Dockerfile", imageTagsList[0])
         if(!aptly){
           throw new Exception("Docker aptly build image failed")
-        }
-
-        common.infoMsg("Building aptly-api ")
-        aptlyApi = dockerLib.buildDockerImage("mirantis/aptly-api", "", "docker/aptly-api.Dockerfile", imageTagsList[0])
-        if(!aptlyApi){
-          throw new Exception("Docker aptly-api build image failed")
         }
 
         common.infoMsg("Building aptly-publisher")
@@ -51,10 +45,6 @@ node("docker") {
         common.infoMsg("Uploading aptly image with tags ${imageTagsList}")
         for(int i=0;i<imageTagsList.size();i++){
           aptly.push(imageTagsList[i])
-        }
-        common.infoMsg("Uploading aptly-api image with tags ${imageTagsList}")
-        for(int i=0;i<imageTagsList.size();i++){
-          aptlyApi.push(imageTagsList[i])
         }
         common.infoMsg("Uploading aptly-publisher image with tags ${imageTagsList}")
         for(int i=0;i<imageTagsList.size();i++){
