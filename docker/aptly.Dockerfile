@@ -1,6 +1,9 @@
 FROM debian:stretch
 
+MAINTAINER dev@mirantis.com
+
 ARG DIST=squeeze
+ARG APTLY_VERSION=1.3.0
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install aptly and required tools
@@ -18,7 +21,7 @@ RUN apt-get -q update                     \
     && echo "deb http://repo.aptly.info/ $DIST main" > /etc/apt/sources.list.d/aptly.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ED75B5A4483DA07C \
     && apt-get update \
-    && apt-get -y install aptly \
+    && apt-get -y install aptly=$APTLY_VERSION \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY files/aptly.conf /etc/aptly.conf
@@ -26,7 +29,7 @@ COPY files/*.sh /usr/local/bin/
 COPY files/entrypoint.sh /entrypoint.sh
 
 # Enable Aptly Bash completions
-RUN wget https://raw.githubusercontent.com/smira/aptly/master/completion.d/aptly \
+RUN wget https://raw.githubusercontent.com/aptly-dev/aptly/v$APTLY_VERSION/completion.d/aptly \
   -O /etc/bash_completion.d/aptly \
   && echo "if ! shopt -oq posix; then\n\
   if [ -f /usr/share/bash-completion/bash_completion ]; then\n\
